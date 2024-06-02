@@ -1,0 +1,9 @@
+# to ignore files by prettier
+# can use files generator in .prettierignore
+
+.env
+*.env
+.env*
+
+/.vscode
+/node_modules

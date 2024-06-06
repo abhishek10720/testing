@@ -17,7 +17,7 @@ app.use(express.static('public'))
 import userRouter from "./routes/user.routes.js"
 //user routes declaration
 // app.use('/users', userRouter) but for best practices
-app.use('/api/v1/users', userRouter)    //api with versioning
+app.use('/api/v1/users', userRouter)    //api with versioning           
 
 
 

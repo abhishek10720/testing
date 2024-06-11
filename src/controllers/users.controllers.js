@@ -5,6 +5,7 @@ import {uploaOnCloudinary} from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 
 
+
 const generateAccessAndRefreshToken = async function(userId){
     try {
         const user = await User.findById(userId)    //find user by id
@@ -115,8 +116,8 @@ const loginUser = asyncHandler(
         }
 //console.log("tokens: ",AccessToken, RefreshToken);----------err.sol-->return token in userToken generating methods.
         return res.status(200)
-        .cookie("access-token", AccessToken, options)
-        .cookie("Refresh-token", RefreshToken, options)
+        .cookie("accessToken", AccessToken, options)
+        .cookie("refreshToken", RefreshToken, options)
         .json(
             new ApiResponse(
                 200,
@@ -129,5 +130,32 @@ const loginUser = asyncHandler(
     }
 )
 
+const logOutUser = asyncHandler(
+    async function(req, res, next){
+        //verifyJWT(next)-> req.user
+//clear cookies to logout user
+        //find user then unSet its refreshToken
+        await User.findByIdAndUpdate(req.user._id,
+            {$unset :   [   {refreshToken : 1}  ]    },
+            {new: true} //set the new option to true to return the document after update was applied.
+        )
 
-export {registeredUser,loginUser};
+        const options = {
+            httpOnly: true,
+            secure: true
+        }
+
+        return res
+        .status(200)
+        .clearCookie("refreshToken", options)   //cookie-parser
+        .clearCookie("accessToken", options)
+        .json(new ApiResponse(200,{},"User logged out"))
+
+
+
+    }
+)
+
+
+
+export {registeredUser,loginUser, logOutUser};
